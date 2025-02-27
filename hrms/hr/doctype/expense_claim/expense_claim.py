@@ -324,11 +324,13 @@ class ExpenseClaim(AccountsController):
 			if flt(self.total_advance_amount, precision) > amount_with_taxes:
 				frappe.throw(_("Total advance amount cannot be greater than total sanctioned amount"))
 
-	def validate_sanctioned_amount(self):
+	def validate_sanctioned_amount(self): 
 		for d in self.get("expenses"):
+			# Hapus batasan agar Sanctioned Amount bisa lebih besar dari Amount
 			if flt(d.sanctioned_amount) > flt(d.amount):
-				frappe.throw(
-					_("Sanctioned Amount cannot be greater than Claim Amount in Row {0}.").format(d.idx)
+				frappe.msgprint(
+					_("Warning: Sanctioned Amount is greater than Claim Amount in Row {0}.").format(d.idx),
+					alert=True, indicator="orange"
 				)
 
 	def set_expense_account(self, validate=False):
